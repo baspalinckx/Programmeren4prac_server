@@ -21,8 +21,7 @@ routes.get('/films', function(req, res) {
 });
 
 //
-// Retourneer één specifieke todos. Hier maken we gebruik van URL parameters.
-// Vorm van de URL: http://hostname:3000/api/v1/todos/23
+// Retourneer één specifieke film.
 //
 routes.get('/films/:filmid', function(req, res) {
 
@@ -31,6 +30,21 @@ routes.get('/films/:filmid', function(req, res) {
     res.contentType('application/json');
 
     db.query('SELECT * FROM film WHERE film_id=?', [filmId], function(error, rows, fields) {
+        if (error) {
+            res.status(401).json(error);
+        } else {
+            res.status(200).json({ result: rows });
+        };
+    });
+});
+
+routes.get('/rentals/:userid', function(req, res) {
+
+    var rentalId = req.params.userid;
+
+    res.contentType('application/json');
+
+    db.query('SELECT * FROM rental WHERE rental_id=?', [rentalId], function(error, rows, fields) {
         if (error) {
             res.status(401).json(error);
         } else {
