@@ -8,10 +8,10 @@ var db = require('../config/db');
 //
 // Geef een lijst van alle todos. Dat kunnen er veel zijn.
 //
-routes.get('/todos', function(req, res) {
+routes.get('/films', function(req, res) {
     res.contentType('application/json');
 
-    db.query('SELECT * FROM todos', function(error, rows, fields) {
+    db.query('SELECT * FROM film', function(error, rows, fields) {
         if (error) {
             res.status(401).json(error);
         } else {
@@ -24,13 +24,13 @@ routes.get('/todos', function(req, res) {
 // Retourneer één specifieke todos. Hier maken we gebruik van URL parameters.
 // Vorm van de URL: http://hostname:3000/api/v1/todos/23
 //
-routes.get('/todos/:id', function(req, res) {
+routes.get('/films/:filmid', function(req, res) {
 
-    var todosId = req.params.id;
+    var filmId = req.params.filmid;
 
     res.contentType('application/json');
 
-    db.query('SELECT * FROM todos WHERE ID=?', [todosId], function(error, rows, fields) {
+    db.query('SELECT * FROM film WHERE film_id=?', [filmId], function(error, rows, fields) {
         if (error) {
             res.status(401).json(error);
         } else {
