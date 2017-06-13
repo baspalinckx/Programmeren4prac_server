@@ -1,9 +1,12 @@
+
 //
 // ./api/authentication.routes.v1.js
 //
 var express = require('express');
 var router = express.Router();
 
+var register = require('../functions/register');
+var login = require('../functions/login');
 var auth = require('../auth/authentication');
 
 //
@@ -14,32 +17,68 @@ var auth = require('../auth/authentication');
 // 	 - als user gevonden en password matcht, dan return valide token
 //   - anders is de inlogpoging gefaald - geef foutmelding terug.
 //
+
+router.post('/register', function (req,res) {
+
+    var email = req.body.email;
+    var password = req.body.password;
+
+    if (!email || !password || !email.trim() || !password.trim()) {
+
+        res.status(400).json({message: 'Invalid Request !'});
+    } else {
+
+        register.registerUser(email, password).then(function (result) {
+
+            res.setHeader('Location', '/users/' + email);
+            res.status(result.status).json({message: result.message});
+        }).catch(function (err) {
+            return res.status(err.status).json({message: err.message});
+        });
+    }
+});
+
+
+
 router.post('/login', function(req, res) {
 
     // Even kijken wat de inhoud is
     console.dir(req.body);
 
-    // De username en pwd worden meegestuurd in de request body
-    var username = req.body.username;
-    var password = req.body.password;
+    var credentials = auth(req);
 
-    // Dit is een dummy-user - die haal je natuurlijk uit de database.
-    // Momenteel zetten we ze als environment variabelen. (Ook op Heroku!)
-    var _dummy_username = process.env.APP_USERNAME || "username";
-    var _dummy_password = process.env.APP_PASSWORD || "test";
+    if (!credentials) {
 
-    // Kijk of de gegevens matchen. Zo ja, dan token genereren en terugsturen.
-    if (username == _dummy_username && password == _dummy_password) {
-        var token = auth.encodeToken(username);
-        res.status(200).json({
-            "token": token,
-        });
+        res.status(400).json({message: 'Invalid Request !'});
     } else {
-        console.log('Input: username = ' + username + ', password = ' + password);
-        res.status(401).json({ "error": "Invalid credentials, bye" })
-    }
 
+        login.loginUser(credentials.name, credentials.pass).then(function (result) {
+
+            var token = auth.encodeToken(username);
+            res.status(200).json({
+                "token": token,
+            });
+
+
+        }).catch(function (err) {
+            return res.status(err.status).json({message: err.message});
+        });
+    }
 });
+
+
+//     // Kijk of de gegevens matchen. Zo ja, dan token genereren en terugsturen.
+//     if (username == _dummy_username && password == _dummy_password) {
+//         var token = auth.encodeToken(username);
+//         res.status(200).json({
+//             "token": token,
+//         });
+//     } else {
+//         console.log('Input: username = ' + username + ', password = ' + password);
+//         res.status(401).json({ "error": "Invalid credentials, bye" })
+//     }
+//
+// });
 
 // Hiermee maken we onze router zichtbaar voor andere bestanden. 
 module.exports = router;

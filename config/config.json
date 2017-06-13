@@ -3,5 +3,6 @@
     "dbHost": "146.185.130.82",
     "dbUser": "1025",
     "dbDatabase": "1025",
+    "dbPassword": "baskoen",
     "secretkey": "een lange complexe tekst die moeilijk te raden is"
 }
