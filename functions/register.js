@@ -4,13 +4,12 @@
 var user = require('../models/user.js');
 var bcrypt = require('bcryptjs');
 
-exports.registerUser = function (name, email, password) {
+exports.registerUser = function (email, password) {
     return new Promise(function (resolve, reject) {
         var salt = bcrypt.genSaltSync(10);
         var hash = bcrypt.hashSync(password, salt);
 
         var newUser = new user({
-
             email: email,
             hashed_password: hash
         });

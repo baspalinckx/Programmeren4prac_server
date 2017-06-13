@@ -4,10 +4,11 @@
 //
 var express = require('express');
 var router = express.Router();
+var auth = require('basic-auth');
 
 var register = require('../functions/register');
 var login = require('../functions/login');
-var auth = require('../auth/authentication');
+var auth2 = require('../auth/authentication');
 
 //
 // Hier gaat de gebruiker inloggen.
@@ -31,7 +32,8 @@ router.post('/register', function (req,res) {
         register.registerUser(email, password).then(function (result) {
 
             res.setHeader('Location', '/users/' + email);
-            res.status(result.status).json({message: result.message});
+            console.log("Succes!")
+           // res.status(result.status).json({message: result.message});
         }).catch(function (err) {
             return res.status(err.status).json({message: err.message});
         });
@@ -43,18 +45,23 @@ router.post('/register', function (req,res) {
 router.post('/login', function(req, res) {
 
     // Even kijken wat de inhoud is
-    console.dir(req.body);
+   // console.dir(req.body);
 
-    var credentials = auth(req);
+    var email = req.body.email;
+    var password = req.body.password;
 
-    if (!credentials) {
+    // var credentials = auth.parse(req.headers['Proxy-Authorisation']);
+    //
+    // if (!credentials) {
+    //
+    //     res.status(400).json({message: 'Invalid Request !'});
+    // } else {
 
-        res.status(400).json({message: 'Invalid Request !'});
-    } else {
+        login.loginUser(email, password).then(function (result) {
 
-        login.loginUser(credentials.name, credentials.pass).then(function (result) {
+            //var username = credentials.name;
 
-            var token = auth.encodeToken(username);
+            var token = auth2.encodeToken(email);
             res.status(200).json({
                 "token": token,
             });
@@ -63,8 +70,8 @@ router.post('/login', function(req, res) {
         }).catch(function (err) {
             return res.status(err.status).json({message: err.message});
         });
-    }
-});
+    });
+
 
 
 //     // Kijk of de gegevens matchen. Zo ja, dan token genereren en terugsturen.
