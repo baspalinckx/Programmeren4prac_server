@@ -40,11 +40,26 @@ routes.get('/films/:filmid', function(req, res) {
 
 routes.get('/rentals/:userid', function(req, res) {
 
-    var rentalId = req.params.userid;
+    var userId = req.params.userid;
 
     res.contentType('application/json');
 
-    db.query('SELECT * FROM rental WHERE rental_id=?', [rentalId], function(error, rows, fields) {
+    db.query('SELECT '  +
+        'film.film_id, ' +
+        'film.title, ' +
+        'inventory.inventory_id, ' +
+        'rental.rental_id, ' +
+        'rental.rental_date, ' +
+        'rental.return_date, ' +
+        'customer.first_name, ' +
+        'customer.customer_id, ' +
+        'customer.last_name, ' +
+        'customer.active ' +
+        'FROM film ' +
+        'LEFT JOIN inventory USING(film_id) ' +
+        'LEFT JOIN rental USING(inventory_id) ' +
+        'LEFT JOIN customer USING(customer_id) ' +
+        'WHERE customer_id=?;', [userId], function(error, rows, fields) {
         if (error) {
             res.status(401).json(error);
         } else {
