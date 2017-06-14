@@ -134,12 +134,13 @@ routes.put('/todos/:id', function(req, res) {
 // 
 // Vorm van de URL: DELETE http://hostname:3000/api/v1/todos/23
 //
-routes.delete('/todos/:id', function(req, res) {
+routes.delete('/rentals/:userid/:inventoryid', function(req, res) {
 
-    var ID = req.params.id;
+    var userId = req.params.userid;
+    var inventoryId = req.params.inventoryid;
     var query = {
-        sql: 'DELETE FROM `todos` WHERE ID=?',
-        values: [ID],
+        sql: 'DELETE FROM `rental` WHERE customer_id=? AND inventory_id=?',
+        values: [userId, inventoryId],
         timeout: 2000 // 2secs
     };
 
