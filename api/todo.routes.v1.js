@@ -8,6 +8,25 @@ var db = require('../config/db');
 //
 // Geef een lijst van alle todos. Dat kunnen er veel zijn.
 //
+
+routes.get("/films", function(req, res){
+
+    var offset = parseInt(req.query.offset);
+    var count = parseInt(req.query.count);
+
+    db.query("SELECT * FROM film LIMIT ? OFFSET ?", [count,offset], function(error, rows, fields){
+        if (error) {
+            res.status(401).json({"test":"test"});
+        } else {
+            res.status(200).json({ result: rows });
+        };
+
+
+    });
+
+});
+
+
 routes.get('/todos', function(req, res) {
     res.contentType('application/json');
 
@@ -39,6 +58,10 @@ routes.get('/todos/:id', function(req, res) {
     });
 });
 
+
+
+
+
 //
 // Voeg een todo toe. De nieuwe info wordt gestuurd via de body van de request message.
 // Vorm van de URL: POST http://hostname:3000/api/v1/todos
@@ -64,6 +87,7 @@ routes.post('/todos', function(req, res) {
         };
     });
 });
+
 
 //
 // Wijzig een bestaande todo. De nieuwe info wordt gestuurd via de body van de request message.

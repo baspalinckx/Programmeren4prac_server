@@ -4,7 +4,7 @@
 // Configuratiebestand voor MySql database.
 //
 var mysql = require('mysql');
-var config = require('../config/config');
+var config = require('./config.json');
 
 var connectionSettings = {
     host: process.env.DB_HOST || config.dbHost,

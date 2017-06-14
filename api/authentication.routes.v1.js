@@ -4,10 +4,9 @@
 //
 var express = require('express');
 var router = express.Router();
-var auth = require('basic-auth');
 
-var register = require('../functions/register');
-var login = require('../functions/login');
+
+
 var auth2 = require('../auth/authentication');
 var db = require('../config/db');
 
