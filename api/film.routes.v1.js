@@ -55,18 +55,20 @@ routes.get('/rentals/:userid', function(req, res) {
 
 //
 // Voeg een todo toe. De nieuwe info wordt gestuurd via de body van de request message.
-// Vorm van de URL: POST http://hostname:3000/api/v1/todos
 //
-routes.post('/todos', function(req, res) {
+routes.post('/rentals/:userid/:inventoryid', function(req, res) {
 
-    var todos = req.body;
+    // var userid = req.body.userid;
+    // var inventoryid =req.body.inventoryid;
+
+    var rentals = req.body;
     var query = {
-        sql: 'INSERT INTO `todos`(`Titel`, `Beschrijving`) VALUES (?, ?)',
-        values: [todos.Titel, todos.Beschrijving],
+        sql: 'INSERT INTO `rental`(`rental_id`, `rental_date`, `inventory_id`, `customer_id`, `return_date`, `staff_id`, `last_update`) VALUES (?, ?, ?, ?, ?, ?, ?)',
+        values: [rentals.rental_id, rentals.rental_date, req.body.inventoryid, req.body.userid, rentals.return_date, rentals.staff_id, rentals.last_update],
         timeout: 2000 // 2secs
     };
 
-    console.dir(todos);
+    console.dir(rentals);
     console.log('Onze query: ' + query.sql);
 
     res.contentType('application/json');
@@ -75,7 +77,7 @@ routes.post('/todos', function(req, res) {
             res.status(401).json(error);
         } else {
             res.status(200).json({ result: rows });
-        };
+        }
     });
 });
 
