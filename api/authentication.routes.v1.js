@@ -9,6 +9,7 @@ var auth = require('basic-auth');
 var register = require('../functions/register');
 var login = require('../functions/login');
 var auth2 = require('../auth/authentication');
+var db = require('../config/db');
 
 //
 // Hier gaat de gebruiker inloggen.
@@ -21,33 +22,38 @@ var auth2 = require('../auth/authentication');
 
 router.post('/register', function (req,res) {
 
-    var email = req.body.email;
+    var username = req.body.username;
     var password = req.body.password;
 
-    if (!email || !password || !email.trim() || !password.trim()) {
+    var todos = req.body;
+    var query = {
+        sql: 'INSERT INTO `customer`(`first_name`, `last_name`) VALUES (?, ?)',
+        values: [username, password],
+        timeout: 2000 // 2secs
+    };
 
-        res.status(400).json({message: 'Invalid Request !'});
-    } else {
 
-        register.registerUser(email, password).then(function (result) {
+    console.log('Onze query: ' + query.sql);
 
-            res.setHeader('Location', '/users/' + email);
-            console.log("Succes!")
-           // res.status(result.status).json({message: result.message});
-        }).catch(function (err) {
-            return res.status(err.status).json({message: err.message});
-        });
-    }
+    res.contentType('application/json');
+    db.query(query, function(error, rows, fields) {
+        if (error) {
+            res.status(401).json(error);
+        } else {
+            res.status(200).json({ result: rows });
+        };
+    });
 });
+
 
 
 
 router.post('/login', function(req, res) {
 
     // Even kijken wat de inhoud is
-   // console.dir(req.body);
+    // console.dir(req.body);
 
-    var email = req.body.email;
+    var username = req.body.username;
     var password = req.body.password;
 
     // var credentials = auth.parse(req.headers['Proxy-Authorisation']);
@@ -57,20 +63,45 @@ router.post('/login', function(req, res) {
     //     res.status(400).json({message: 'Invalid Request !'});
     // } else {
 
-        login.loginUser(email, password).then(function (result) {
 
-            //var username = credentials.name;
+    db.query('SELECT * FROM customer WHERE first_name = ?', [username], function (error, results, fields) {
+        if (error) {
+            // console.log("error ocurred",error);
+            res.send({
+                "code": 400,
+                "failed": "error ocurred"
+            })
+        } else {
+            // console.log('The solution is: ', results);
+            if (results.length > 0) {
+                if (results[0].last_name == password) {
+                    // res.send({
+                    //     "code": 200,
+                    //     "success": "login sucessfull"
+                    // });
 
-            var token = auth2.encodeToken(email);
-            res.status(200).json({
-                "token": token,
-            });
-
-
-        }).catch(function (err) {
-            return res.status(err.status).json({message: err.message});
-        });
+                    var token = auth2.encodeToken(username);
+                    res.status(200).json({
+                        "token": token,
+                    });
+                }
+                else {
+                    res.send({
+                        "code": 204,
+                        "success": "Email and password does not match"
+                    });
+                }
+            }
+            else {
+                res.send({
+                    "code": 204,
+                    "success": "Email does not exits"
+                });
+            }
+        }
     });
+
+});
 
 
 
@@ -88,4 +119,4 @@ router.post('/login', function(req, res) {
 // });
 
 // Hiermee maken we onze router zichtbaar voor andere bestanden. 
-module.exports = router;
+    module.exports = router;
