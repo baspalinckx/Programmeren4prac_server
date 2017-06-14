@@ -71,7 +71,7 @@ routes.get('/rentals/:userid', function(req, res) {
 //
 // Voeg een todo toe. De nieuwe info wordt gestuurd via de body van de request message.
 //
-routes.post('/rentals/:rentalid/:inventoryid', function(req, res) {
+routes.post('/rentals/:userid/:inventoryid', function(req, res) {
 
     // var userid = req.body.userid;
     // var inventoryid =req.body.inventoryid;
@@ -79,8 +79,8 @@ routes.post('/rentals/:rentalid/:inventoryid', function(req, res) {
     var rentals = req.body;
     var currentDate = new Date();
     var query = {
-        sql: 'INSERT INTO `rental`(`rental_id`, `rental_date`, `inventory_id`, `customer_id`, `return_date`) VALUES (?, ?, ?, ?, ?)',
-        values: [rentals.rental_id, currentDate, req.params.inventoryid, req.params.inventoryid, rentals.return_date],
+        sql: 'INSERT INTO `rental`(`rental_id`, `rental_date`, `inventory_id`, `customer_id`) VALUES (?, ?, ?, ?)',
+        values: [rentals.rental_id, currentDate, req.params.inventoryid, req.params.userid],
         timeout: 2000 // 2secs
     };
 
