@@ -77,9 +77,10 @@ routes.post('/rentals/:rentalid/:inventoryid', function(req, res) {
     // var inventoryid =req.body.inventoryid;
 
     var rentals = req.body;
+    var currentDate = new Date();
     var query = {
         sql: 'INSERT INTO `rental`(`rental_id`, `rental_date`, `inventory_id`, `customer_id`, `return_date`) VALUES (?, ?, ?, ?, ?)',
-        values: [rentals.rental_id, rentals.rental_date, req.params.inventoryid, req.params.inventoryid, rentals.return_date],
+        values: [rentals.rental_id, currentDate, req.params.inventoryid, req.params.inventoryid, rentals.return_date],
         timeout: 2000 // 2secs
     };
 
