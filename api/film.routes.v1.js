@@ -8,10 +8,10 @@ var db = require('../config/db');
 //
 // Geef een lijst van alle todos. Dat kunnen er veel zijn.
 //
-routes.get('/todos', function(req, res) {
+routes.get('/films', function(req, res) {
     res.contentType('application/json');
 
-    db.query('SELECT * FROM todos', function(error, rows, fields) {
+    db.query('SELECT * FROM film', function(error, rows, fields) {
         if (error) {
             res.status(401).json(error);
         } else {
@@ -21,16 +21,45 @@ routes.get('/todos', function(req, res) {
 });
 
 //
-// Retourneer één specifieke todos. Hier maken we gebruik van URL parameters.
-// Vorm van de URL: http://hostname:3000/api/v1/todos/23
+// Retourneer één specifieke film.
 //
-routes.get('/todos/:id', function(req, res) {
+routes.get('/films/:filmid', function(req, res) {
 
-    var todosId = req.params.id;
+    var filmId = req.params.filmid;
 
     res.contentType('application/json');
 
-    db.query('SELECT * FROM todos WHERE ID=?', [todosId], function(error, rows, fields) {
+    db.query('SELECT * FROM film WHERE film_id=?', [filmId], function(error, rows, fields) {
+        if (error) {
+            res.status(401).json(error);
+        } else {
+            res.status(200).json({ result: rows });
+        };
+    });
+});
+
+routes.get('/rentals/:userid', function(req, res) {
+
+    var userId = req.params.userid;
+
+    res.contentType('application/json');
+
+    db.query('SELECT '  +
+        'film.film_id, ' +
+        'film.title, ' +
+        'inventory.inventory_id, ' +
+        'rental.rental_id, ' +
+        'rental.rental_date, ' +
+        'rental.return_date, ' +
+        'customer.first_name, ' +
+        'customer.customer_id, ' +
+        'customer.last_name, ' +
+        'customer.active ' +
+        'FROM film ' +
+        'LEFT JOIN inventory USING(film_id) ' +
+        'LEFT JOIN rental USING(inventory_id) ' +
+        'LEFT JOIN customer USING(customer_id) ' +
+        'WHERE customer_id=?;', [userId], function(error, rows, fields) {
         if (error) {
             res.status(401).json(error);
         } else {
@@ -41,18 +70,21 @@ routes.get('/todos/:id', function(req, res) {
 
 //
 // Voeg een todo toe. De nieuwe info wordt gestuurd via de body van de request message.
-// Vorm van de URL: POST http://hostname:3000/api/v1/todos
 //
-routes.post('/todos', function(req, res) {
+routes.post('/rentals/:userid/:inventoryid', function(req, res) {
 
-    var todos = req.body;
+    // var userid = req.body.userid;
+    // var inventoryid =req.body.inventoryid;
+
+    var rentals = req.body;
+    var currentDate = new Date();
     var query = {
-        sql: 'INSERT INTO `todos`(`Titel`, `Beschrijving`) VALUES (?, ?)',
-        values: [todos.Titel, todos.Beschrijving],
+        sql: 'INSERT INTO `rental`(`rental_id`, `rental_date`, `inventory_id`, `customer_id`) VALUES (?, ?, ?, ?)',
+        values: [rentals.rental_id, currentDate, req.params.inventoryid, req.params.userid],
         timeout: 2000 // 2secs
     };
 
-    console.dir(todos);
+    console.dir(rentals);
     console.log('Onze query: ' + query.sql);
 
     res.contentType('application/json');
@@ -61,7 +93,7 @@ routes.post('/todos', function(req, res) {
             res.status(401).json(error);
         } else {
             res.status(200).json({ result: rows });
-        };
+        }
     });
 });
 

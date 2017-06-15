@@ -12,10 +12,9 @@ var connectionSettings = {
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE || config.dbDatabase,
     debug: false
-}
+};
 
 var connection = mysql.createConnection(connectionSettings);
-
 connection.connect(function(error) {
     if (error) {
         console.error("Error connecting to database " + connectionSettings.database + " on " + connectionSettings.host + ": " + error.message);
