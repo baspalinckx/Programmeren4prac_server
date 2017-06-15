@@ -5,6 +5,7 @@
 var settings = require('../config/config.json');
 const moment = require('moment');
 const jwt = require('jwt-simple');
+var db = require('../config/db');
 
 //
 // Encode (van username naar token)
