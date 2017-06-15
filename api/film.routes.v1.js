@@ -9,6 +9,26 @@ var db = require('../config/db');
 // Geef een lijst van alle todos. Dat kunnen er veel zijn.
 //
 
+routes.get("/films", function(req, res){
+
+    var offset = parseInt(req.query.offset);
+    var count = parseInt(req.query.count);
+
+    res.contentType('application/json');
+
+    db.query("SELECT * FROM film LIMIT ? OFFSET ?", [count,offset], function(error, rows, fields){
+        if (error) {
+            res.status(401).json(error);
+        } else {
+
+            res.status(200).json({ result: rows });
+
+        };
+
+
+    });
+
+});
 
 
 
@@ -25,22 +45,6 @@ routes.get('/films', function(req, res) {
     });
 });
 
-routes.get("/films?offset=:start&count=:number", function(req, res){
-
-    var offset = parseInt(req.query.offset);
-    var count = parseInt(req.query.count);
-
-    db.query("SELECT * FROM film LIMIT ? OFFSET ?", [count,offset], function(error, rows, fields){
-        if (error) {
-            res.status(401).json({"test":"test"});
-        } else {
-            res.status(200).json({ result: rows });
-        };
-
-
-    });
-
-});
 
 //
 // Retourneer één specifieke film.
