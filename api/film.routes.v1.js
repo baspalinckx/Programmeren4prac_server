@@ -25,7 +25,7 @@ routes.get('/films', function(req, res) {
     });
 });
 
-routes.get("/films/test", function(req, res){
+routes.get("/films?offset=:start&count=:number", function(req, res){
 
     var offset = parseInt(req.query.offset);
     var count = parseInt(req.query.count);
@@ -124,35 +124,6 @@ routes.post('/rentals/:userid/:inventoryid', function(req, res) {
 });
 
 
-//
-// Wijzig een bestaande todo. De nieuwe info wordt gestuurd via de body van de request message.
-// Er zijn twee manieren om de id van de todos mee te geven: via de request parameters (doen we hier)
-// of als property in de request body.
-// 
-// Vorm van de URL: PUT http://hostname:3000/api/v1/todos/23
-//
-routes.put('/todos/:id', function(req, res) {
-
-    var todos = req.body;
-    var ID = req.params.id;
-    var query = {
-        sql: 'UPDATE `todos` SET Title=? , Beschrijving=? WHERE ID=?',
-        values: [todos.Title, todos.Beschrijving, ID],
-        timeout: 2000 // 2secs
-    };
-
-    console.dir(todos);
-    console.log('Onze query: ' + query.sql);
-
-    res.contentType('application/json');
-    db.query(query, function(error, rows, fields) {
-        if (error) {
-            res.status(401).json(error);
-        } else {
-            res.status(200).json({ result: rows });
-        };
-    });
-});
 
 //
 // Verwijder een bestaande todo.
