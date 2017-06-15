@@ -1,10 +1,14 @@
+
 //
 // ./api/authentication.routes.v1.js
 //
 var express = require('express');
 var router = express.Router();
 
-var auth = require('../auth/authentication');
+
+
+var auth2 = require('../auth/authentication');
+var db = require('../config/db');
 
 //
 // Hier gaat de gebruiker inloggen.
@@ -14,32 +18,104 @@ var auth = require('../auth/authentication');
 // 	 - als user gevonden en password matcht, dan return valide token
 //   - anders is de inlogpoging gefaald - geef foutmelding terug.
 //
-router.post('/login', function(req, res) {
 
-    // Even kijken wat de inhoud is
-    console.dir(req.body);
+router.post('/register', function (req,res) {
 
-    // De username en pwd worden meegestuurd in de request body
     var username = req.body.username;
     var password = req.body.password;
 
-    // Dit is een dummy-user - die haal je natuurlijk uit de database.
-    // Momenteel zetten we ze als environment variabelen. (Ook op Heroku!)
-    var _dummy_username = process.env.APP_USERNAME || "username";
-    var _dummy_password = process.env.APP_PASSWORD || "test";
+    var todos = req.body;
+    var query = {
+        sql: 'INSERT INTO `customer`(`first_name`, `last_name`) VALUES (?, ?)',
+        values: [username, password],
+        timeout: 2000 // 2secs
+    };
 
-    // Kijk of de gegevens matchen. Zo ja, dan token genereren en terugsturen.
-    if (username == _dummy_username && password == _dummy_password) {
-        var token = auth.encodeToken(username);
-        res.status(200).json({
-            "token": token,
-        });
-    } else {
-        console.log('Input: username = ' + username + ', password = ' + password);
-        res.status(401).json({ "error": "Invalid credentials, bye" })
-    }
+
+    console.log('Onze query: ' + query.sql);
+
+    res.contentType('application/json');
+    db.query(query, function(error, rows, fields) {
+        if (error) {
+            res.status(401).json(error);
+        } else {
+            res.status(200).json({ result: rows });
+        };
+    });
+});
+
+
+
+
+router.post('/login', function(req, res) {
+
+    // Even kijken wat de inhoud is
+    // console.dir(req.body);
+
+    var username = req.body.username;
+    var password = req.body.password;
+
+    // var credentials = auth.parse(req.headers['Proxy-Authorisation']);
+    //
+    // if (!credentials) {
+    //
+    //     res.status(400).json({message: 'Invalid Request !'});
+    // } else {
+
+
+    db.query('SELECT * FROM customer WHERE first_name = ?', [username], function (error, results, fields) {
+        if (error) {
+            // console.log("error ocurred",error);
+            res.send({
+                "code": 400,
+                "failed": "error ocurred"
+            })
+        } else {
+            // console.log('The solution is: ', results);
+            if (results.length > 0) {
+                if (results[0].last_name == password) {
+                    // res.send({
+                    //     "code": 200,
+                    //     "success": "login sucessfull"
+                    // });
+
+                    var token = auth2.encodeToken(username);
+                    res.status(200).json({
+                        "token": token,
+                    });
+                }
+                else {
+                    res.send({
+                        "code": 204,
+                        "success": "Email and password does not match"
+                    });
+                }
+            }
+            else {
+                res.send({
+                    "code": 204,
+                    "success": "Email does not exits"
+                });
+            }
+        }
+    });
 
 });
 
+
+
+//     // Kijk of de gegevens matchen. Zo ja, dan token genereren en terugsturen.
+//     if (username == _dummy_username && password == _dummy_password) {
+//         var token = auth.encodeToken(username);
+//         res.status(200).json({
+//             "token": token,
+//         });
+//     } else {
+//         console.log('Input: username = ' + username + ', password = ' + password);
+//         res.status(401).json({ "error": "Invalid credentials, bye" })
+//     }
+//
+// });
+
 // Hiermee maken we onze router zichtbaar voor andere bestanden. 
-module.exports = router;
+    module.exports = router;
