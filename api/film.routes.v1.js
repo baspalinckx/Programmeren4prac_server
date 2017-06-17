@@ -9,37 +9,22 @@ var db = require('../config/db');
 // Geef een lijst van alle todos. Dat kunnen er veel zijn.
 //
 
-
-
-
-routes.get('/films', function(req, res) {
-
-    res.contentType('application/json');
-
-    db.query('SELECT * FROM film', function(error, rows, fields) {
-        if (error) {
-            res.status(401).json(error);
-        } else {
-            res.status(200).json({ result: rows });
-        };
-    });
-});
-
-routes.get("/films?offset=:start&count=:number", function(req, res){
+routes.get("/films", function(req, res){
 
     var offset = parseInt(req.query.offset);
     var count = parseInt(req.query.count);
 
+    res.contentType('application/json');
+
     db.query("SELECT * FROM film LIMIT ? OFFSET ?", [count,offset], function(error, rows, fields){
         if (error) {
-            res.status(401).json({"test":"test"});
+            res.status(401).json(error);
         } else {
+
             res.status(200).json({ result: rows });
+
         };
-
-
     });
-
 });
 
 //
@@ -69,6 +54,11 @@ routes.get('/rentals/:userid', function(req, res) {
     db.query('SELECT '  +
         'film.film_id, ' +
         'film.title, ' +
+        'film.description, ' +
+        'film.release_year, ' +
+        'film.length, ' +
+        'film.rating, ' +
+        'film.special_features, ' +
         'inventory.inventory_id, ' +
         'rental.rental_id, ' +
         'rental.rental_date, ' +
@@ -90,9 +80,22 @@ routes.get('/rentals/:userid', function(req, res) {
     });
 });
 
+routes.put('/rentals/:userid/:inventoryid', function(req, res) {
 
+    // var user = req.params.userid;
+    // var inventory = req.params.inventoryid;
+    var user = req.params.userid;
+    var inventory = req.params.inventoryid;
 
-
+    res.contentType('application/json');
+    db.query('UPDATE rental SET inventory_id=? WHERE customer_id=?', [inventory, user], function(error, rows, fields) {
+        if (error) {
+            res.status(401).json(error);
+        } else {
+            res.status(200).json({ result: rows });
+        };
+    });
+});
 
 //
 // Voeg een todo toe. De nieuwe info wordt gestuurd via de body van de request message.
@@ -101,16 +104,14 @@ routes.post('/rentals/:userid/:inventoryid', function(req, res) {
 
     // var userid = req.body.userid;
     // var inventoryid =req.body.inventoryid;
-
-    var rentals = req.body;
     var currentDate = new Date();
     var query = {
-        sql: 'INSERT INTO `rental`(`rental_id`, `rental_date`, `inventory_id`, `customer_id`) VALUES (?, ?, ?, ?)',
-        values: [rentals.rental_id, currentDate, req.params.inventoryid, req.params.userid],
+        sql: 'INSERT INTO `rental`(`rental_date`, `inventory_id`, `customer_id`) VALUES (?, ?, ?)',
+        values: [currentDate, req.params.inventoryid, req.params.userid],
         timeout: 2000 // 2secs
     };
 
-    console.dir(rentals);
+    //console.dir(rentals);
     console.log('Onze query: ' + query.sql);
 
     res.contentType('application/json');
