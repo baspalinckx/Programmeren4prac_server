@@ -80,8 +80,10 @@ router.post('/login', function(req, res) {
                     // });
 
                     var token = auth2.encodeToken(username);
+                    var customerId = results[0].customer_id;
                     res.status(200).json({
                         "token": token,
+                        "customer_id": customerId
                     });
                 }
                 else {
