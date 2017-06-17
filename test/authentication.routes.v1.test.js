@@ -16,10 +16,10 @@ chai.use(chaiHttp);
 
 describe('Auth API v1', function() {
 
-    it('returns UnauthorizedError on GET /api/v1/todos when not logged in', function(done) {
+    it('returns UnauthorizedError on GET /api/v1/films when not logged in', function (done) {
         chai.request(server)
-            .get('/api/v1/todos')
-            .end(function(err, res) {
+            .get('/api/v1/films?offset=1&count=1')
+            .end(function (err, res) {
                 res.should.have.status(401);
                 res.should.be.json;
                 res.body.should.be.a('object');
@@ -29,19 +29,22 @@ describe('Auth API v1', function() {
             });
     });
 
-    it('returns an error on POST /api/v1/login with invalid credentials ', function(done) {
+
+
+
+    it('returns an error on POST /api/v1/films ', function(done) {
         var user = {
-            username: "invalid"
+            username: "invalid",
+            password: "invalid"
         }
         chai.request(server)
             .post('/api/v1/login')
             .send(user)
             .end(function(err, res) {
-                res.should.have.status(401);
-                res.should.be.json;
+                res.should.have.status(200);
                 res.body.should.be.an('object');
-                res.body.should.have.property('error').that.is.a('string');
-                res.body.error.should.equal('Invalid credentials, bye')
+                res.body.should.have.property('succes').that.is.a('string');
+                res.body.error.should.equal('Email does not exits');
                 done();
             });
     });
