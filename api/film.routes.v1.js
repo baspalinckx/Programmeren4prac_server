@@ -22,6 +22,8 @@ routes.get("/films", function(req, res){
         "film.description, " +
         "film.length, " +
         "film.rating, " +
+        "film.release_year, " +
+        "film.rental_rate, " +
         "film.special_features, " +
         "inventory.inventory_id " +
         "FROM film " +
