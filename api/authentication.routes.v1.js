@@ -26,7 +26,7 @@ router.post('/register', function (req,res) {
 
     var todos = req.body;
     var query = {
-        sql: 'INSERT INTO `customer`(`first_name`, `last_name`) VALUES (?, ?)',
+        sql: 'INSERT INTO `customer`(`first_name`, `password`) VALUES (?, ?)',
         values: [username, password],
         timeout: 2000 // 2secs
     };
@@ -73,7 +73,7 @@ router.post('/login', function(req, res) {
         } else {
             // console.log('The solution is: ', results);
             if (results.length > 0) {
-                if (results[0].last_name == password) {
+                if (results[0].password == password) {
                     // res.send({
                     //     "code": 200,
                     //     "success": "login sucessfull"

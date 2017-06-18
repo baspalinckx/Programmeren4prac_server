@@ -15,15 +15,15 @@ var token;
 
 chai.use(chaiHttp);
 
-describe('GET /api/v1/todos', function() {
+describe('GET /api/v1/films', function() {
 
     //
     // Before all tests: get a valid JWT token from the server
     //
     before(function(done) {
         var user = {
-            username: "username",
-            password: "password"
+            username: "koen3",
+            password: "test"
         }
         chai.request(server)
             .post('/api/v1/login')
@@ -31,6 +31,7 @@ describe('GET /api/v1/todos', function() {
             .end(function(err, res) {
                 res.body.should.be.an('object');
                 res.body.should.have.property('token');
+                //res.body.shoud.have.property('customer_id')
                 token = res.body.token;
                 done();
             });
@@ -48,9 +49,9 @@ describe('GET /api/v1/todos', function() {
 
     // 
     //
-    it('should return all ToDos when logged in', function(done) {
+    it('should return the first film when logged in', function(done) {
         chai.request(server)
-            .get('/api/v1/todos')
+            .get('/api/v1/films?offset=1&count=1')
             .set('Authorization', 'Bearer ' + token)
             .end(function(err, res) {
                 // console.dir(err);
@@ -61,9 +62,230 @@ describe('GET /api/v1/todos', function() {
                 // mock.verify();
                 done();
             });
-    });
+    })
 
-    // 
+    //
     //
 
-});
+})
+
+describe('GET /api/v1/rentals/userid', function() {
+
+    //
+    // Before all tests: get a valid JWT token from the server
+    before(function(done) {
+        var user = {
+            username: "koen3",
+            password: "test"
+        }
+    chai.request(server)
+        .post('/api/v1/login')
+        .send(user)
+        .end(function(err, res) {
+            res.body.should.be.an('object');
+            res.body.should.have.property('token');
+            res.body.shoud.have.property('customer_id')
+            token = res.body.token;
+            done();
+        });
+
+
+    //
+    beforeEach(function() {
+        // set things we changed for testing
+    });
+
+    //
+    afterEach(function() {
+        // reset things we changed for testing
+    });
+
+    //
+    //
+    it('should return all the films of user 3', function(done) {
+        chai.request(server)
+            .get('/api/v1/rentals/3')
+            .set('Authorization', 'Bearer ' + token)
+            .end(function(err, res) {
+                console.dir(err);
+                res.should.have.status(200);
+                res.should.be.json;
+                res.body.should.be.a('object');
+                res.body.should.have.property('result').that.is.an('array');
+                mock.verify();
+                done();
+            });
+    })
+
+        //
+        //
+
+    })
+})
+
+describe('GET /api/v1/rentals/userid/inventoryid', function() {
+
+    //
+    // Before all tests: get a valid JWT token from the server
+    before(function(done) {
+        var user = {
+            username: "koen3",
+            password: "test"
+        }
+    chai.request(server)
+        .post('/api/v1/login')
+        .send(user)
+        .end(function(err, res) {
+            res.body.should.be.an('object');
+            res.body.should.have.property('token');
+            res.body.shoud.have.property('customer_id')
+            token = res.body.token;
+            done();
+        });
+
+
+    //
+    beforeEach(function() {
+        // set things we changed for testing
+    });
+
+    //
+    afterEach(function() {
+        // reset things we changed for testing
+    });
+
+    //
+    //
+    it('should add a film to user 3 with inventory id 1', function(done) {
+        chai.request(server)
+            .get('/api/v1/rentals/3/1')
+            .set('Authorization', 'Bearer ' + token)
+            .end(function(err, res) {
+                console.dir(err);
+                res.should.have.status(200);
+                res.should.be.json;
+                res.body.should.be.a('object');
+                res.body.should.have.property('result').that.is.an('array');
+                mock.verify();
+                done();
+            });
+    })
+
+        //
+        //
+
+    })
+})
+
+describe('POST /api/v1/rentals/userid/inventoryid', function() {
+
+    //
+    // Before all tests: get a valid JWT token from the server
+    before(function (done) {
+        var user = {
+            username: "koen3",
+            password: "test"
+        }
+        chai.request(server)
+            .post('/api/v1/login')
+            .send(user)
+            .end(function (err, res) {
+                res.body.should.be.an('object');
+                res.body.should.have.property('token');
+                res.body.shoud.have.property('customer_id')
+                token = res.body.token;
+                done();
+            });
+
+
+        //
+        beforeEach(function () {
+            // set things we changed for testing
+        });
+
+        //
+        afterEach(function () {
+            // reset things we changed for testing
+        });
+
+        //
+        //
+        it('should add a film to user 3 with inventory id 1', function (done) {
+            chai.request(server)
+                .post('/api/v1/rentals/3/1')
+                .set('Authorization', 'Bearer ' + token)
+                .end(function (err, res) {
+                    console.dir(err);
+                    res.should.have.status(200);
+                    res.should.be.json;
+                    res.body.should.be.a('object');
+                    res.body.should.have.property('result').that.is.an('array');
+                    mock.verify();
+                    done();
+                });
+        })
+
+        //
+        //
+
+    })
+})
+
+describe('DELETE /api/v1/rentals/userid/inventoryid', function() {
+
+    //
+    // Before all tests: get a valid JWT token from the server
+    before(function(done) {
+        var user = {
+            username: "koen3",
+            password: "test"
+        }
+        chai.request(server)
+            .post('/api/v1/login')
+            .send(user)
+            .end(function (err, res) {
+                res.body.should.be.an('object');
+                res.body.should.have.property('token');
+                res.body.shoud.have.property('customer_id')
+                token = res.body.token;
+                done();
+            });
+
+
+        //
+        beforeEach(function () {
+            // set things we changed for testing
+        });
+
+        //
+        afterEach(function () {
+            // reset things we changed for testing
+        });
+
+        //
+        //
+        it('should delete a film from user 3 with inventory id 1', function (done) {
+            chai.request(server)
+                .delete('/api/v1/rentals/3/1')
+                .set('Authorization', 'Bearer ' + token)
+                .end(function (err, res) {
+                    console.dir(err);
+                    res.should.have.status(200);
+                    res.should.be.json;
+                    res.body.should.be.a('object');
+                    res.body.should.have.property('result').that.is.an('array');
+                    mock.verify();
+                    done();
+                });
+        })
+
+        //
+        //
+
+    })
+})
+
+
+    //
+    //
+
