@@ -16,7 +16,18 @@ routes.get("/films", function(req, res){
 
     res.contentType('application/json');
 
-    db.query("SELECT * FROM film LIMIT ? OFFSET ?", [count,offset], function(error, rows, fields){
+    db.query("SELECT " +
+        "film.film_id, " +
+        "film.title, " +
+        "film.description, " +
+        "film.length, " +
+        "film.rating, " +
+        "film.special_features, " +
+        "inventory.inventory_id " +
+        "FROM film " +
+        "INNER JOIN inventory ON film.film_id = inventory.film_id " +
+        "GROUP BY film_id " +
+        "LIMIT ? OFFSET ?", [count,offset], function(error, rows, fields){
         if (error) {
             res.status(401).json(error);
         } else {
@@ -36,12 +47,24 @@ routes.get('/films/:filmid', function(req, res) {
 
     res.contentType('application/json');
 
-    db.query('SELECT * FROM film WHERE film_id=?', [filmId], function(error, rows, fields) {
+    db.query('SELECT ' +
+        'film.film_id, ' +
+        'film.title, ' +
+        'film.description, ' +
+        'film.length, ' +
+        'film.rating, ' +
+        'film.special_features, ' +
+        'inventory.inventory_id ' +
+        'FROM film ' +
+        'INNER JOIN inventory ON film.film_id = inventory.film_id ' +
+        'WHERE film.film_id=? ' +
+        'GROUP BY film_id', [filmId], function(error, rows, fields) {
+
         if (error) {
             res.status(401).json(error);
         } else {
             res.status(200).json({ result: rows });
-        };
+        }
     });
 });
 
@@ -76,7 +99,7 @@ routes.get('/rentals/:userid', function(req, res) {
             res.status(401).json(error);
         } else {
             res.status(200).json({ result: rows });
-        };
+        }
     });
 });
 
