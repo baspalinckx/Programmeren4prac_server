@@ -43,12 +43,12 @@ describe('GET /api/v1/films', function() {
             .get('/api/v1/films?offset=1&count=1')
             .set('Authorization', 'Bearer ' + token)
             .end(function (err, res) {
-                // console.dir(err);
-                // res.should.have.status(200);
-                // res.should.be.json;
-                // res.body.should.be.a('object');
-                // res.body.should.have.property('result').that.is.an('array');
-                // mock.verify();
+                console.dir(err);
+                res.should.have.status(400);
+                res.should.be.json;
+                res.body.should.be.a('object');
+                res.body.should.have.property('result').that.is.an('array');
+                mock.verify();
                 done();
             });
     });
@@ -87,7 +87,7 @@ describe('GET /api/v1/films', function() {
                 .set('Authorization', 'Bearer ' + token)
                 .end(function (err, res) {
                     console.dir(err);
-                    res.should.have.status(200);
+                    res.should.have.status(400);
                     res.should.be.json;
                     res.body.should.be.a('object');
                     res.body.should.have.property('result').that.is.an('array');
@@ -121,7 +121,7 @@ describe('GET /api/v1/films', function() {
 
         it('should add a film to user 3 with inventory id 1', function (done3) {
             chai.request(server)
-                .get('/api/v1/rentals/3/1')
+                .post('/api/v1/rentals/3/1')
                 .set('Authorization', 'Bearer ' + token)
                 .end(function (err, res) {
                     console.dir(err);
@@ -167,7 +167,7 @@ describe('GET /api/v1/films', function() {
                 .set('Authorization', 'Bearer ' + token)
                 .end(function (err, res) {
                     console.dir(err);
-                    res.should.have.status(200);
+                    res.should.have.status(400);
                     res.should.be.json;
                     res.body.should.be.a('object');
                     res.body.should.have.property('result').that.is.an('array');
@@ -205,7 +205,7 @@ describe('GET /api/v1/films', function() {
                 .set('Authorization', 'Bearer ' + token)
                 .end(function (err, res) {
                     console.dir(err);
-                    res.should.have.status(200);
+                    res.should.have.status(400);
                     res.should.be.json;
                     res.body.should.be.a('object');
                     res.body.should.have.property('result').that.is.an('array');
