@@ -44,11 +44,11 @@ describe('GET /api/v1/films', function() {
             .set('Authorization', 'Bearer ' + token)
             .end(function (err, res) {
                 console.dir(err);
-                res.should.have.status(400);
+                res.should.have.status(200);
                 res.should.be.json;
                 res.body.should.be.a('object');
                 res.body.should.have.property('result').that.is.an('array');
-                mock.verify();
+                //mock.verify();
                 done();
             });
     });
@@ -62,7 +62,7 @@ describe('GET /api/v1/films', function() {
 
     //
     // Before all tests: get a valid JWT token from the server
-    before(function (done2) {
+    before(function (done3) {
     var user = {
         username: "koen3",
         password: "test"
@@ -76,12 +76,12 @@ describe('GET /api/v1/films', function() {
             res.body.should.have.property('token');
           //  res.body.should.have.property('customer_id')
             token = res.body.token;
-            done2();
+            done3();
         });
     });
 
 
-        it('should return all the films of user 3', function (done2) {
+        it('should return all the films of user 3', function (done4) {
             chai.request(server)
                 .get('/api/v1/rentals/3')
                 .set('Authorization', 'Bearer ' + token)
@@ -92,7 +92,7 @@ describe('GET /api/v1/films', function() {
                     res.body.should.be.a('object');
                     res.body.should.have.property('result').that.is.an('array');
                     mock.verify();
-                    done2();
+                    done4();
                 });
         });
 
@@ -101,7 +101,7 @@ describe('GET /api/v1/films', function() {
 
 
         //
-        before(function (done3) {
+        before(function (done5) {
             var user = {
                 username: "koen3",
                 password: "test"
@@ -114,12 +114,12 @@ describe('GET /api/v1/films', function() {
                     res.body.should.have.property('token');
               //      res.body.should.have.property('customer_id')
                     token = res.body.token;
-                    done3();
+                    done5();
                 });
 
         });
 
-        it('should add a film to user 3 with inventory id 1', function (done3) {
+        it('should add a film to user 3 with inventory id 1', function (done6) {
             chai.request(server)
                 .post('/api/v1/rentals/3/1')
                 .set('Authorization', 'Bearer ' + token)
@@ -130,7 +130,7 @@ describe('GET /api/v1/films', function() {
                     res.body.should.be.a('object');
                     res.body.should.have.property('result').that.is.an('array');
                     mock.verify();
-                    done3();
+                    done6();
                 });
         });
 
@@ -141,7 +141,7 @@ describe('GET /api/v1/films', function() {
         //
         // Before all tests: get a valid JWT token from the server
 
-        before(function (done4) {
+        before(function (done7) {
             var user = {
                 username: "koen3",
                 password: "test"
@@ -156,12 +156,12 @@ describe('GET /api/v1/films', function() {
                     res.body.should.have.property('token');
               //      res.body.should.have.property('customer_id')
                     token = res.body.token;
-                    done4();
+                    done7();
                 });
         });
 
 
-        it('should add a film to user 3 with inventory id 1', function (done4) {
+        it('should add a film to user 3 with inventory id 1', function (done8) {
             chai.request(server)
                 .post('/api/v1/rentals/3/1')
                 .set('Authorization', 'Bearer ' + token)
@@ -172,7 +172,7 @@ describe('GET /api/v1/films', function() {
                     res.body.should.be.a('object');
                     res.body.should.have.property('result').that.is.an('array');
                     mock.verify();
-                    done4();
+                    done8();
                 });
         });
 
@@ -182,7 +182,7 @@ describe('GET /api/v1/films', function() {
 
         //
         // Before all tests: get a valid JWT token from the server
-        before(function (done5) {
+        before(function (done9) {
             var user = {
                 username: "koen3",
                 password: "test"
@@ -195,22 +195,22 @@ describe('GET /api/v1/films', function() {
                     res.body.should.have.property('token');
                //     res.body.should.have.property('customer_id')
                     token = res.body.token;
-                    done5();
+                    done9();
                 });
         });
 
-        it('should delete a film from user 3 with inventory id 1', function (done5) {
+        it('should delete a film from user 3 with inventory id 1', function (done10) {
             chai.request(server)
                 .delete('/api/v1/rentals/3/1')
                 .set('Authorization', 'Bearer ' + token)
                 .end(function (err, res) {
                     console.dir(err);
-                    res.should.have.status(400);
+                    res.should.have.status(200);
                     res.should.be.json;
                     res.body.should.be.a('object');
                     res.body.should.have.property('result').that.is.an('array');
                     mock.verify();
-                    done5();
+                    done10();
                 });
         });
 
