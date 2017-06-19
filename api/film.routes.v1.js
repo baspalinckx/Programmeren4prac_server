@@ -90,7 +90,6 @@ routes.get('/rentals/:userid', function(req, res) {
         'rental.return_date, ' +
         'customer.first_name, ' +
         'customer.customer_id, ' +
-        'customer.last_name, ' +
         'customer.active ' +
         'FROM film ' +
         'LEFT JOIN inventory USING(film_id) ' +
