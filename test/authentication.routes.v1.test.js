@@ -32,27 +32,27 @@ describe('Auth API v1', function() {
 
 
 
-    it('returns an error on POST /api/v1/films ', function(done) {
-        var user = {
+    it('returns an error on POST /api/v1/login ', function(done2) {
+        var userwrong = {
             username: "invalid",
             password: "invalid"
         }
         chai.request(server)
             .post('/api/v1/login')
-            .send(user)
+            .send(userwrong)
             .end(function(err, res) {
-                res.should.have.status(200);
+                //res.should.have.status(200);
                 res.body.should.be.an('object');
-                res.body.should.have.property('succes').that.is.a('string');
-                res.body.error.should.equal('Email does not exits');
-                done();
+                res.body.should.have.property('code').equal(204);
+                res.body.should.have.property('success').equal('Email does not exits');
+                done2();
             });
     });
 
-    it('returns a token on POST /api/v1/login', function(done) {
+    it('returns a token on POST /api/v1/login', function(done3) {
         var user = {
-            username: "username",
-            password: "password"
+            username: "koen3",
+            password: "test"
         }
         chai.request(server)
             .post('/api/v1/login')
@@ -62,7 +62,7 @@ describe('Auth API v1', function() {
                 res.should.be.json;
                 res.body.should.be.an('object');
                 res.body.should.have.property('token').that.is.a('string');
-                done();
+                done3();
             });
     });
 
