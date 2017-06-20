@@ -10,7 +10,7 @@ var chai = require('chai');
 var chaiHttp = require('chai-http');
 var sinon = require('sinon');
 var server = require('../server');
-var chould = chai.should();
+var should = chai.should();
 var token;
 
 chai.use(chaiHttp);
@@ -31,7 +31,7 @@ describe('GET /api/v1/films', function() {
             .end(function (err, res) {
                 res.body.should.be.an('object');
                 res.body.should.have.property('token');
-              //  res.body.should.have.property('customer_id')
+              // res.body.should.have.property('customer_id')
                 token = res.body.token;
                 done();
             });
@@ -66,7 +66,7 @@ describe('GET /api/v1/films', function() {
     var user = {
         username: "koen3",
         password: "test"
-    }
+    };
 
         chai.request(server)
         .post('/api/v1/login')
@@ -74,30 +74,30 @@ describe('GET /api/v1/films', function() {
         .end(function (err, res) {
             res.body.should.be.an('object');
             res.body.should.have.property('token');
-          //  res.body.should.have.property('customer_id')
+            //res.body.should.have.property('customer_id');
             token = res.body.token;
             done3();
         });
     });
 
 
-        it('should return all the films of user 3', function (done4) {
-            chai.request(server)
-                .get('/api/v1/rentals/3')
-                .set('Authorization', 'Bearer ' + token)
-                .end(function (err, res) {
-                    console.dir(err);
-                    res.should.have.status(400);
-                    res.should.be.json;
-                    res.body.should.be.a('object');
-                    res.body.should.have.property('result').that.is.an('array');
-                    mock.verify();
-                    done4();
-                });
-        });
+    it('should return all the films of user 3', function (done4) {
+        chai.request(server)
+            .get('/api/v1/rentals/17')
+            .set('Authorization', 'Bearer ' + token)
 
-        //
-        //
+            .end(function (err, res) {
+                console.dir(err);
+                res.should.have.status(400);
+                res.should.be.json;
+                res.body.should.be.a('object');
+                res.body.should.have.property('result').that.is.an('array');
+                done4();
+            });
+    });
+
+    //
+    //
 
 
         //
@@ -128,8 +128,7 @@ describe('GET /api/v1/films', function() {
                     res.should.have.status(200);
                     res.should.be.json;
                     res.body.should.be.a('object');
-                    res.body.should.have.property('result').that.is.an('array');
-                    mock.verify();
+                    res.body.should.have.property('result').that.is.an('object');
                     done6();
                 });
         });
@@ -157,22 +156,6 @@ describe('GET /api/v1/films', function() {
               //      res.body.should.have.property('customer_id')
                     token = res.body.token;
                     done7();
-                });
-        });
-
-
-        it('should add a film to user 3 with inventory id 1', function (done8) {
-            chai.request(server)
-                .post('/api/v1/rentals/3/1')
-                .set('Authorization', 'Bearer ' + token)
-                .end(function (err, res) {
-                    console.dir(err);
-                    res.should.have.status(400);
-                    res.should.be.json;
-                    res.body.should.be.a('object');
-                    res.body.should.have.property('result').that.is.an('array');
-                    mock.verify();
-                    done8();
                 });
         });
 
@@ -208,8 +191,7 @@ describe('GET /api/v1/films', function() {
                     res.should.have.status(200);
                     res.should.be.json;
                     res.body.should.be.a('object');
-                    res.body.should.have.property('result').that.is.an('array');
-                    mock.verify();
+                    res.body.should.have.property('result').that.is.an('object');
                     done10();
                 });
         });
